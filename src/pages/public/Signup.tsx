@@ -12,8 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { useSignupMutation } from "@/redux/api/authApi";
 import { toast } from "react-toastify";
+import { useSignupMutation } from "@/redux/api/authApi";
 
 type TSignupFormValues = {
   name: string;

@@ -1,6 +1,6 @@
 import { TLoginResponse } from "@/types/AuthType";
 import { createSlice } from "@reduxjs/toolkit";
-import { loginApi } from "../api/authApi";
+import { authApi } from "../api/authApi";
 
 interface AuthState {
   user: TLoginResponse | null;
@@ -30,7 +30,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      loginApi.endpoints.login.matchFulfilled,  
+      authApi.endpoints.login.matchFulfilled,  
       (state, action) => {
         state.user = action.payload;
         state.authData.token = action.payload.token;

@@ -7,8 +7,8 @@ import {
   TSignupResponse,
 } from "@/types/AuthType";
 
-export const loginApi = createApi({
-  reducerPath: "loginApi",
+export const authApi = createApi({
+  reducerPath: "authApi",
   baseQuery: axiosBaseQuery(),
   endpoints: (builder) => ({
     login: builder.mutation<TLoginResponse, TloginFormValues>({
@@ -18,13 +18,6 @@ export const loginApi = createApi({
         data,
       }),
     }),
-  }),
-});
-
-export const signupApi = createApi({
-  reducerPath: "signupApi",
-  baseQuery: axiosBaseQuery(),
-  endpoints: (builder) => ({
     signup: builder.mutation<TSignupResponse, TSignupFormValues>({
       query: (data) => ({
         url: "user/create",
@@ -35,6 +28,4 @@ export const signupApi = createApi({
   }),
 });
 
-export const { useSignupMutation } = signupApi;
-
-export const { useLoginMutation } = loginApi;
+export const { useLoginMutation, useSignupMutation } = authApi;
