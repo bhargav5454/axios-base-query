@@ -28,7 +28,6 @@ const ProductForm: React.FC = () => {
   const [addProducts, { error, isSuccess, isLoading }] =
     useAddProductsMutation();
   const { productData } = useSelector((state: any) => state.product);
-  const {data } = useGetProductsQuery();
   const handleChange = (
     e:
       | ChangeEvent<HTMLInputElement>

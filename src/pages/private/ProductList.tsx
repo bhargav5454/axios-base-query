@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -26,52 +24,82 @@ import {
   useGetProductsQuery,
   useUpdateProductMutation,
 } from "@/redux/api/productApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { pageUpdate } from "@/redux/slices/productSlice";
 
 const ProductList: React.FC = () => {
-  const {data, isLoading, error } = useGetProductsQuery();
-  const [deleteProduct] =
-    useDeleteProductMutation();
-  const [updateProduct, { isLoading: isUpdating, error: isUpdateError }] =
-    useUpdateProductMutation();
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // Items to display per page
 
+  // Fetch products using the custom hook
+  const {
+    data: queryData,
+    isLoading,
+    error,
+  } = useGetProductsQuery({ page: currentPage, limit: itemsPerPage });
+
+  // Handlers for pagination
+  const handleNextPage = () => setCurrentPage((prev) => prev + 1);
+  const handlePreviousPage = () =>
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+
+  // Mutations for deleting and updating products
+  const [deleteProduct] = useDeleteProductMutation();
+  const [updateProduct, { error: isUpdateError }] = useUpdateProductMutation();
+
+  // Selector to access Redux state
   const { productData } = useSelector((state: any) => state.product);
+  const dispatch = useDispatch();
 
-  // Add state for modal and selected product
+  // Update Redux state when queryData changes
+  useEffect(() => {
+    if (queryData) {
+      const { data } = queryData;
+      dispatch(pageUpdate(data));
+    }
+  }, [queryData, dispatch]);
+
+  // State for the edit modal and the currently selected product
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
+  // Handler for editing a product
   const handleEdit = (product: any) => {
     setSelectedProduct(product);
     setIsEditModalOpen(true);
   };
 
+  // Handler for submitting the edit form
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateProduct(selectedProduct)
       .unwrap()
       .then(() => {
-        toast.success("Product updated successfully!"); 
+        toast.success("Product updated successfully!");
         setIsEditModalOpen(false);
       })
       .catch(() => {
-        toast.error(isUpdateError?.message); 
+        toast.error(isUpdateError?.message || "Failed to update product.");
       });
   };
 
+  // Handler for deleting a product
   const handleDelete = (id: number) => {
     deleteProduct({ id })
       .unwrap()
       .then(() => {
-        toast.success("Product deleted successfully!"); 
+        toast.success("Product deleted successfully!");
       })
       .catch(() => {
-        toast.error("Failed to delete product."); 
+        toast.error("Failed to delete product.");
       });
   };
 
+  // Loader while data is being fetched
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -168,6 +196,20 @@ const ProductList: React.FC = () => {
               </CardFooter>
             </Card>
           ))}
+        </div>
+        <div className="flex justify-between mt-4">
+          <Button disabled={currentPage === 1} onClick={handlePreviousPage}>
+            Previous
+          </Button>
+          <span>
+            Page {queryData?.currentPage} of {queryData?.totalPages}
+          </span>
+          <Button
+            disabled={currentPage === queryData?.totalPages}
+            onClick={handleNextPage}
+          >
+            Next
+          </Button>
         </div>
       </div>
 

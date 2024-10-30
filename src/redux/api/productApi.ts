@@ -15,16 +15,17 @@ export const productApi = createApi({
   baseQuery: axiosBaseQuery(),
   tagTypes: ["Product"],
   endpoints: (builder) => ({
-    getProducts: builder.query<TGetProductsResponse, void>({
-      query: () => ({
-        url: "product/getall",
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+    getProducts: builder.query<TGetProductsResponse, { page: number; limit: number }>({
+      query: ({ page, limit }) => ({
+          url: `product/getall?page=${page}&limit=${limit}`,
+          method: "GET",
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
       }),
       providesTags: ["Product"],
-    }),
+  }),
+  
     addProducts: builder.mutation<TAddProductResponse, TProductFormValue>({
       query: (data) => ({
         url: "product/creates",
