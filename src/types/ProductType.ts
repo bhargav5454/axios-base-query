@@ -7,6 +7,8 @@ export type TAddProductResponse = {
 // Response type for getting products
 export type TGetProductsResponse = {
   message: string;
+  currentPage?: number;
+  totalPages?: number;
   data: TProduct[];
 };
 

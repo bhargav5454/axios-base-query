@@ -22,6 +22,9 @@ const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
+    pageUpdate: (state, action) => {
+      state.productData = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -60,4 +63,5 @@ const productSlice = createSlice({
   },
 });
 
+export const { pageUpdate } = productSlice.actions;
 export default productSlice.reducer;
