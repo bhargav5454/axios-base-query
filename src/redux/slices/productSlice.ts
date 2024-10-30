@@ -27,7 +27,6 @@ const productSlice = createSlice({
     builder.addMatcher(
       productApi.endpoints.addProducts.matchFulfilled,
       (state, action: PayloadAction<TAddProductResponse>) => {
-        console.log("🚀 ~ action.payload.data:", action.payload.data);
         state.productData.push(action.payload.data);
         state.message = action.payload.message;
       }
