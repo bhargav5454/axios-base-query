@@ -146,14 +146,6 @@ const ProductForm: React.FC = () => {
           </form>
         </CardContent>
       </Card>
-      {data?.data?.map((val, ind) => {
-        return (
-          <>
-            <h1>{val.name}</h1>
-            <br />
-          </>
-        );
-      })}
     </div>
   );
 };
