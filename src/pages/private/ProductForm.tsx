@@ -11,10 +11,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAddProductsMutation } from "@/redux/api/productApi";
+import { useAddProductsMutation, useGetProductsQuery } from "@/redux/api/productApi";
 import { TProductFormValue } from "@/types/ProductType";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const ProductForm: React.FC = () => {
   const [formData, setFormData] = useState<TProductFormValue>({
@@ -22,11 +23,12 @@ const ProductForm: React.FC = () => {
     description: "",
     price: Number(),
     category: "",
-    quantity: "",
+    quantity: Number(),
   });
   const [addProducts, { error, isSuccess, isLoading }] =
     useAddProductsMutation();
-
+  const { productData } = useSelector((state: any) => state.product);
+  const {data } = useGetProductsQuery();
   const handleChange = (
     e:
       | ChangeEvent<HTMLInputElement>
@@ -51,7 +53,7 @@ const ProductForm: React.FC = () => {
           description: "",
           price: Number(),
           category: "",
-          quantity: "",
+          quantity: Number(),
         });
       })
       .catch(() => {

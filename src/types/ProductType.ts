@@ -28,7 +28,7 @@ export type TProductFormValue = {
   description: string;
   price: number;
   category: string;
-  quantity: string;
+  quantity: number;
 };
 
 // Single product type
@@ -52,5 +52,3 @@ export type TProduct = {
 export type TdeleteProductFormValue = {
   id: number;
 };
-
-

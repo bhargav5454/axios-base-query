@@ -21,7 +21,8 @@ const initialState: ProductState = {
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+  },
   extraReducers: (builder) => {
     builder.addMatcher(
       productApi.endpoints.addProducts.matchFulfilled,
@@ -58,4 +59,5 @@ const productSlice = createSlice({
     );
   },
 });
+
 export default productSlice.reducer;

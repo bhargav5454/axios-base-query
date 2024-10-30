@@ -13,6 +13,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: axiosBaseQuery(),
+  tagTypes: ["Product"],
   endpoints: (builder) => ({
     getProducts: builder.query<TGetProductsResponse, void>({
       query: () => ({
@@ -22,14 +23,17 @@ export const productApi = createApi({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
+      providesTags: ["Product"],
     }),
     addProducts: builder.mutation<TAddProductResponse, TProductFormValue>({
       query: (data) => ({
-        url: "product/create",
+        url: "product/creates",
         method: "POST",
         data,
       }),
+      invalidatesTags: ["Product"],
     }),
+
     deleteProduct: builder.mutation<
       TdeleteProductResponse,
       TdeleteProductFormValue
