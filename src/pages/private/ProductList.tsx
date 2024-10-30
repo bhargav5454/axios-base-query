@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, Trash2, Package, Calendar } from "lucide-react";
+import { Edit, Trash2, Package, Calendar, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -28,12 +28,13 @@ import {
 } from "@/redux/api/productApi";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const ProductList: React.FC = () => {
-  const { isLoading, isError } = useGetProductsQuery();
-  const [deleteProduct, { isLoading: isDeleting, isError: isDeleteError }] =
+  const { isLoading, error } = useGetProductsQuery();
+  const [deleteProduct, { isLoading: isDeleting, error: isDeleteError }] =
     useDeleteProductMutation();
-  const [updateProduct, { isLoading: isUpdating, isError: isUpdateError }] =
+  const [updateProduct, { isLoading: isUpdating, error: isUpdateError }] =
     useUpdateProductMutation();
 
   const { productData } = useSelector((state: any) => state.product);
@@ -49,16 +50,34 @@ const ProductList: React.FC = () => {
 
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateProduct(selectedProduct);
-    setIsEditModalOpen(false);
+    updateProduct(selectedProduct)
+      .unwrap()
+      .then(() => {
+        toast.success("Product updated successfully!"); 
+        setIsEditModalOpen(false);
+      })
+      .catch(() => {
+        toast.error(isUpdateError?.message); 
+      });
   };
 
   const handleDelete = (id: number) => {
-    deleteProduct({ id }).unwrap();
+    deleteProduct({ id })
+      .unwrap()
+      .then(() => {
+        toast.success("Product deleted successfully!"); 
+      })
+      .catch(() => {
+        toast.error("Failed to delete product."); 
+      });
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin h-10 w-10" />
+      </div>
+    );
   }
 
   return (

@@ -25,17 +25,8 @@ const ProductForm: React.FC = () => {
     quantity: "",
   });
   const [addProducts, { error, isSuccess, isLoading }] =
-    useAddProductsMutation(); 
-  
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Product added successfully");
-    }
-    if (error) {
-      toast.error(error.message);
-    }
-  }, [error, isSuccess])
-  
+    useAddProductsMutation();
+
   const handleChange = (
     e:
       | ChangeEvent<HTMLInputElement>
@@ -49,16 +40,23 @@ const ProductForm: React.FC = () => {
     setFormData({ ...formData, category: value });
   };
 
-  const handleSubmit = async(e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    addProducts(formData);  
-    setFormData({
-      name: "",
-      description: "",
-      price: Number(),
-      category: "",
-      quantity: "",
-    })
+    addProducts(formData)
+      .unwrap()
+      .then(() => {
+        toast.success("Product added successfully");
+        setFormData({
+          name: "",
+          description: "",
+          price: Number(),
+          category: "",
+          quantity: "",
+        });
+      })
+      .catch(() => {
+        toast.error(error?.message);
+      });
   };
 
   return (
@@ -74,7 +72,7 @@ const ProductForm: React.FC = () => {
               <Input
                 id="name"
                 name="name"
-                value={formData.name}
+                value={formData?.name}
                 onChange={handleChange}
                 required
               />
@@ -84,7 +82,7 @@ const ProductForm: React.FC = () => {
               <Textarea
                 id="description"
                 name="description"
-                value={formData.description}
+                value={formData?.description}
                 onChange={handleChange}
                 required
               />
@@ -97,7 +95,7 @@ const ProductForm: React.FC = () => {
                 type="number"
                 min="0"
                 step="0.01"
-                value={formData.price}
+                value={formData?.price}
                 onChange={handleChange}
                 required
               />
@@ -128,7 +126,7 @@ const ProductForm: React.FC = () => {
                 name="quantity"
                 type="number"
                 min="0"
-                value={formData.quantity}
+                value={formData?.quantity}
                 onChange={handleChange}
                 required
               />
