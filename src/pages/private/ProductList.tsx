@@ -31,8 +31,8 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const ProductList: React.FC = () => {
-  const { isLoading, error } = useGetProductsQuery();
-  const [deleteProduct, { isLoading: isDeleting, error: isDeleteError }] =
+  const {data, isLoading, error } = useGetProductsQuery();
+  const [deleteProduct] =
     useDeleteProductMutation();
   const [updateProduct, { isLoading: isUpdating, error: isUpdateError }] =
     useUpdateProductMutation();

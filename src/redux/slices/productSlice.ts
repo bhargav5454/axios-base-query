@@ -21,11 +21,13 @@ const initialState: ProductState = {
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+  },
   extraReducers: (builder) => {
     builder.addMatcher(
       productApi.endpoints.addProducts.matchFulfilled,
       (state, action: PayloadAction<TAddProductResponse>) => {
+        console.log("🚀 ~ action.payload.data:", action.payload.data);
         state.productData.push(action.payload.data);
         state.message = action.payload.message;
       }
@@ -58,4 +60,5 @@ const productSlice = createSlice({
     );
   },
 });
+
 export default productSlice.reducer;
