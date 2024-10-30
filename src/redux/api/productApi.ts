@@ -1,12 +1,20 @@
 import { axiosBaseQuery } from "@/lib/axios";
-import { TaddProductResponse, TproductFormValue, TproductListData } from "@/types/ProductType";
+import {
+  TAddProductResponse,
+  TdeleteProductFormValue,
+  TdeleteProductResponse,
+  TGetProductsResponse,
+  TProduct,
+  TProductFormValue,
+  TupdateProductResponse,
+} from "@/types/ProductType";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: axiosBaseQuery(),
   endpoints: (builder) => ({
-    getProducts: builder.query<TproductListData, void>({
+    getProducts: builder.query<TGetProductsResponse, void>({
       query: () => ({
         url: "product/getall",
         method: "GET",
@@ -15,10 +23,26 @@ export const productApi = createApi({
         },
       }),
     }),
-    addProducts: builder.mutation<TaddProductResponse, TproductFormValue>({
+    addProducts: builder.mutation<TAddProductResponse, TProductFormValue>({
       query: (data) => ({
         url: "product/create",
         method: "POST",
+        data,
+      }),
+    }),
+    deleteProduct: builder.mutation<
+      TdeleteProductResponse,
+      TdeleteProductFormValue
+    >({
+      query: (data) => ({
+        url: `product/delete/${data.id}`,
+        method: "DELETE",
+      }),
+    }),
+    updateProduct: builder.mutation<TupdateProductResponse, TProduct>({
+      query: (data) => ({
+        url: `product/update/${data.id}`,
+        method: "PUT",
         data,
       }),
     }),
@@ -26,4 +50,9 @@ export const productApi = createApi({
 });
 
 // Export hooks with the correct names
-export const { useGetProductsQuery, useAddProductsMutation } = productApi;
+export const {
+  useGetProductsQuery,
+  useAddProductsMutation,
+  useDeleteProductMutation,
+  useUpdateProductMutation,
+} = productApi;

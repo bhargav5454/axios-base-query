@@ -31,7 +31,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST"],
+        ignoredActions: ["persist/PERSIST","persist/PURGE"],
       },
     }).concat(authApi.middleware, productApi.middleware),
 });

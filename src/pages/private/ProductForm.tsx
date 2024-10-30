@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,17 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddProductsMutation } from "@/redux/api/productApi";
-import { TproductFormValue } from "@/types/ProductType";
+import { TProductFormValue } from "@/types/ProductType";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 const ProductForm: React.FC = () => {
-  const [formData, setFormData] = useState<TproductFormValue>({
+  const [formData, setFormData] = useState<TProductFormValue>({
     name: "",
     description: "",
     price: Number(),
@@ -28,10 +25,17 @@ const ProductForm: React.FC = () => {
     quantity: "",
   });
   const [addProducts, { error, isSuccess, isLoading }] =
-    useAddProductsMutation();
-  console.log("🚀 ~ error:", error);
-  console.log("🚀 ~ isSuccess:", isSuccess);
-
+    useAddProductsMutation(); 
+  
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Product added successfully");
+    }
+    if (error) {
+      toast.error(error.message);
+    }
+  }, [error, isSuccess])
+  
   const handleChange = (
     e:
       | ChangeEvent<HTMLInputElement>
@@ -45,9 +49,16 @@ const ProductForm: React.FC = () => {
     setFormData({ ...formData, category: value });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async(e: FormEvent) => {
     e.preventDefault();
-    addProducts(formData);
+    addProducts(formData);  
+    setFormData({
+      name: "",
+      description: "",
+      price: Number(),
+      category: "",
+      quantity: "",
+    })
   };
 
   return (
@@ -122,8 +133,15 @@ const ProductForm: React.FC = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
-              Submit
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding product...
+                </>
+              ) : (
+                "Add product"
+              )}
             </Button>
           </form>
         </CardContent>
