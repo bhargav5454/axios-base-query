@@ -12,8 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { useSignupMutation } from "@/redux/api/authApi";
 import { toast } from "react-toastify";
+import { useSignupMutation } from "@/redux/api/authApi";
 
 type TSignupFormValues = {
   name: string;
@@ -30,22 +30,18 @@ const Signup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [signup, { error, isSuccess, isLoading }] = useSignupMutation();
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success('account created successfully')
-    }
-    if (error) {
-      toast.error(error?.message)
-    }
-  }, [ error, isSuccess])
-
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    signup(formData);
+    try {
+      await signup(formData).unwrap();
+      toast.success("Account Created Successfully");
+    } catch (err) {
+      toast.error(error?.message);
+    }
   };
 
   const togglePasswordVisibility = () => {

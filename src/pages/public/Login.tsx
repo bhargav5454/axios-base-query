@@ -31,7 +31,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await login(formData).unwrap();
+       await login(formData).unwrap();
       toast.success("Login Success");
     } catch (error: any) {
       toast.error(error.message);

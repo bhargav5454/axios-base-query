@@ -1,33 +1,41 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import authReducer from "../slices/authSlice";
+import { configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
-import { loginApi, signupApi } from "../api/authApi";
+import authReducer from "../slices/authSlice";
+import productReducer from "../slices/productSlice";
+import { authApi } from "../api/authApi";
+import { productApi } from "../api/productApi";
 
-// Dynamic persist configurations
-const authPersistConfig = {
-  key: "auth",
-  storage,
-  whitelist: ["authData"], 
+// Reusable function to create persisted reducers
+const createPersistedReducer = (
+  key: string,
+  reducer: any,
+  whitelist: string[] = []
+) => {
+  const persistConfig = {
+    key,
+    storage,
+    whitelist,
+  };
+  return persistReducer(persistConfig, reducer);
 };
 
-
-const rootReducer = combineReducers({
-  auth: persistReducer(authPersistConfig, authReducer),
-  [loginApi.reducerPath]: loginApi.reducer,
-  [signupApi.reducerPath]: signupApi.reducer,
-});
-
-// Configure store with dynamic persistence
+// Configure the Redux store
 const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    auth: createPersistedReducer("auth", authReducer, ["authData"]),
+    product: productReducer,
+    [authApi.reducerPath]: authApi.reducer,
+    [productApi.reducerPath]: productApi.reducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST"], 
+        ignoredActions: ["persist/PERSIST","persist/PURGE"],
       },
-    }).concat(loginApi.middleware, signupApi.middleware),
+    }).concat(authApi.middleware, productApi.middleware),
 });
 
+// Create the persistor
 export const persistor = persistStore(store);
 export default store;
