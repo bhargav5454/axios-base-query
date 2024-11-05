@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { pageUpdate } from "@/redux/slices/productSlice";
+import SessionExpiredPopup from "../errors/LoginExpired";
 
 const ProductList: React.FC = () => {
   // State for pagination
@@ -107,6 +108,12 @@ const ProductList: React.FC = () => {
       </div>
     );
   }
+
+  if (error && 'message' in error && typeof error.message === 'string' && error.message.includes('Unauthorized')) {
+    return <SessionExpiredPopup />;
+  }
+  
+
 
   return (
     <>

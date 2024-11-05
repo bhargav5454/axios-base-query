@@ -6,7 +6,7 @@ import Home from "./pages/private/Home";
 import ProductForm from "./pages/private/ProductForm";
 import ProductList from "./pages/private/ProductList";
 import { PrivateRoute, PublicRoute } from "./layouts/Auth/VerifyAuth";
-import NotFoundPage from "./pages/NotFound-page/NotFound";
+import NotFoundPage from "./pages/errors/NotFound";
 import Header from "./pages/Header";
 
 const AppRoutes: React.FC = () => {

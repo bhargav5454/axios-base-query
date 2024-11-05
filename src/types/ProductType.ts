@@ -35,6 +35,7 @@ export type TProductFormValue = {
 
 // Single product type
 export type TProduct = {
+  count?: number;
   id: number;
   name: string;
   description: string;
